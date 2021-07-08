@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"crypto/sha256"
+	"encoding/binary"
+	"log"
 	"time"
 )
 
@@ -50,7 +53,14 @@ func NewBlock(data string, prevBlockHash []byte) *Block {
 
 //实现一个辅助函数，功能是将uint64转换成[]byte
 func Uint64ToByte(num uint64) []byte {
-	return []byte{}
+	var buffer bytes.Buffer
+
+	err := binary.Write(&buffer, binary.BigEndian, num)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return buffer.Bytes()
 }
 
 //3.生成区块
