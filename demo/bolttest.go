@@ -1,16 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"github.com/boltdb/bolt"
 	"log"
 )
 
 func main() {
-	fmt.Println("hello world")
-
 	//1.打开数据库
 	db, err := bolt.Open("test.db", 0600, nil)
+	defer db.Close()
+
 	if err != nil {
 		log.Panic("打开数据库失败！")
 	}
@@ -27,11 +26,12 @@ func main() {
 			}
 		}
 
+		//3.写数据
 		bucket.Put([]byte("11111"), []byte("hello"))
 		bucket.Put([]byte("22222"), []byte("world"))
 
 		return nil
 	})
-	//3.写数据
+
 	//4.读数据
 }
