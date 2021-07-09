@@ -106,7 +106,7 @@ func (bc *BlockChain) AddBlock(data string) {
 		//b.添加到区块链db中
 		//hash作为key，block的字节流作为value，尚未实现
 		bucket.Put(block.Hash, block.Serialize())
-		bucket.Put([]byte("LastHash"), block.Hash)
+		bucket.Put([]byte("LastHashKey"), block.Hash)
 
 		//c.更新内存中的区块链，指的是把tail更新一下
 		bc.tail = block.Hash
