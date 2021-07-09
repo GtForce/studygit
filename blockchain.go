@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/boltdb/bolt"
 	"log"
 )
@@ -52,10 +53,16 @@ func NewBlockChain() *BlockChain {
 			genesisBlock := GenesisBlock()
 
 			//3.写数据
-			//hash作为key,block的字节流作为value,尚未实现
-			bucket.Put(genesisBlock.Hash, genesisBlock.toByte())
+			//hash作为key,block的字节流作为value
+			bucket.Put(genesisBlock.Hash, genesisBlock.Serialize())
 			bucket.Put([]byte("LastHashKey"), genesisBlock.Hash)
 			lastHash = genesisBlock.Hash
+
+			//这是为了读数据测试，马上删掉
+			blockBytes := bucket.Get(genesisBlock.Hash)
+			block := Deserialize(blockBytes)
+			fmt.Printf("block info:%v\n", block)
+
 		} else {
 			lastHash = bucket.Get([]byte("LastHashKey"))
 		}

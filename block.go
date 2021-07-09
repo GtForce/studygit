@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/binary"
+	"encoding/gob"
 	"log"
 	"time"
 )
@@ -54,8 +55,38 @@ func NewBlock(data string, prevBlockHash []byte) *Block {
 	return &block
 }
 
-func (block *Block) toByte() []byte {
-	return []byte{}
+//序列化
+func (block *Block) Serialize() []byte {
+	//编码的数据放到buffer
+	var buffer bytes.Buffer
+
+	//2.使用gob进行序列化（编码）得到字节流
+	//a.定义一个编码器
+	//b.使用编码器进行编码
+	encoder := gob.NewEncoder(&buffer)
+	err := encoder.Encode(&block)
+	if err != nil {
+		log.Panic("编码出错!")
+	}
+
+	//fmt.Printf("编码后的小明：%v\n", buffer.Bytes())
+
+	return buffer.Bytes()
+}
+
+//反序列化
+func Deserialize(data []byte) Block {
+	//3.使用gob进行反序列化（解码）得到Person结构
+	//a.定义一个解码器
+	decoder := gob.NewDecoder(bytes.NewReader(data))
+	var block Block
+	//b.使用解码器进行解码
+	err := decoder.Decode(&block)
+	if err != nil {
+		log.Panic("解码出错！")
+	}
+
+	return block
 }
 
 //1.补充区块字段
