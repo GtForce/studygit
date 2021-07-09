@@ -31,7 +31,6 @@ func NewBlockChain() *BlockChain {
 
 	//1.打开数据库
 	db, err := bolt.Open("blockChainDb", 0600, nil)
-	//defer db.Close()
 
 	if err != nil {
 		log.Panic("打开数据库失败！")
@@ -68,6 +67,7 @@ func NewBlockChain() *BlockChain {
 
 		return nil
 	})
+	//defer db.Close()
 	return &BlockChain{db, lastHash}
 }
 
