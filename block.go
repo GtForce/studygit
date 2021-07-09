@@ -54,6 +54,10 @@ func NewBlock(data string, prevBlockHash []byte) *Block {
 	return &block
 }
 
+func (block *Block) toByte() []byte {
+	return []byte{}
+}
+
 //1.补充区块字段
 //2.更新计算哈希函数
 //3.优化代码
