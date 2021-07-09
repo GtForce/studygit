@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/boltdb/bolt"
 	"log"
 )
@@ -32,7 +31,7 @@ func NewBlockChain() *BlockChain {
 
 	//1.打开数据库
 	db, err := bolt.Open("blockChainDb", 0600, nil)
-	defer db.Close()
+	//defer db.Close()
 
 	if err != nil {
 		log.Panic("打开数据库失败！")
@@ -58,10 +57,10 @@ func NewBlockChain() *BlockChain {
 			bucket.Put([]byte("LastHashKey"), genesisBlock.Hash)
 			lastHash = genesisBlock.Hash
 
-			//这是为了读数据测试，马上删掉
-			blockBytes := bucket.Get(genesisBlock.Hash)
-			block := Deserialize(blockBytes)
-			fmt.Printf("block info:%v\n", block)
+			////这是为了读数据测试，马上删掉
+			//blockBytes := bucket.Get(genesisBlock.Hash)
+			//block := Deserialize(blockBytes)
+			//fmt.Printf("block info:%v\n", block)
 
 		} else {
 			lastHash = bucket.Get([]byte("LastHashKey"))
@@ -90,4 +89,29 @@ func (bc *BlockChain) AddBlock(data string) {
 		//b.添加到区块链数据中
 		bc.blocks = append(bc.blocks, block)
 	*/
+	//如何获取前区块的哈希
+	db := bc.db
+	lastHash := bc.tail //最后一个区块的哈希
+
+	db.Update(func(tx *bolt.Tx) error {
+		//完成数据添加
+		bucket := tx.Bucket([]byte(blockBucket))
+		if bucket == nil {
+			log.Panic("bucket 不应该为空，请检查！")
+		}
+
+		//a.创建新的区块
+		block := NewBlock(data, lastHash)
+
+		//b.添加到区块链db中
+		//hash作为key，block的字节流作为value，尚未实现
+		bucket.Put(block.Hash, block.Serialize())
+		bucket.Put([]byte("LastHash"), block.Hash)
+
+		//c.更新内存中的区块链，指的是把tail更新一下
+		bc.tail = block.Hash
+
+		return nil
+	})
+
 }

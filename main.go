@@ -2,8 +2,8 @@ package main
 
 func main() {
 	bc := NewBlockChain()
-	bc.AddBlock("班长向班花赚了50枚比特币")
-	bc.AddBlock("班长又向班花赚了50枚比特币")
+	bc.AddBlock("111111111111111111")
+	bc.AddBlock("222222222222222222")
 	/*
 		for i, block := range bc.blocks {
 
